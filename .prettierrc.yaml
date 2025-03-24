@@ -1,0 +1,5 @@
+# .prettierrc.yaml
+plugins:
+  - prettier-plugin-tailwindcss
+
+semi: false
