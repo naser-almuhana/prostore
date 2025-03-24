@@ -1,4 +1,6 @@
-import { Loader2Icon } from "lucide-react" // Import the spinner icon from Lucide
+import { Loader2Icon } from "lucide-react"
+
+// Import the spinner icon from Lucide
 
 export default function LoadingPage() {
   return (

@@ -1,1 +1,1 @@
-export {GithubSvg} from './github-svg'
+export { GithubSvg } from "./github-svg"

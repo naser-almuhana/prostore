@@ -1,10 +1,12 @@
+import { notFound } from "next/navigation"
+
+import { getProductBySlug } from "@/lib/actions/product.actions"
+
 import ProductImages from "@/components/shared/product/product-images"
 import { ProductPrice } from "@/components/shared/product/product-price"
 import { Rating } from "@/components/shared/product/rating"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { getProductBySlug } from "@/lib/actions/product.action"
-import { notFound } from "next/navigation"
 
 interface ProductDetailsPageProps {
   params: Promise<{ slug: string }>

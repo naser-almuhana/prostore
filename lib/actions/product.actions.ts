@@ -1,9 +1,11 @@
 "use server"
 
-import { convertToPlainObject } from "@/lib/utils"
-import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants"
-import { prisma } from "@/db/prisma"
 import { Product } from "@/types"
+
+import { prisma } from "@/db/prisma"
+
+import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants"
+import { convertToPlainObject } from "@/lib/utils"
 
 // Get latest products
 export async function getLatestProducts(): Promise<Product[]> {

@@ -10,3 +10,12 @@ export const LATEST_PRODUCTS_LIMIT =
 
 export const GITHUB_REPO_URL =
   process.env.GITHUB_REPO_URL || "https://github.com/naseralmuhana/prostore"
+
+export const userSignInDefaultValues = {
+  email: "user@example.com",
+  password: "123456",
+}
+export const adminSignInDefaultValues = {
+  email: "admin@example.com",
+  password: "123456",
+}

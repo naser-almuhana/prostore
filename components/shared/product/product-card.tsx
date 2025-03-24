@@ -1,10 +1,11 @@
-import Link from "next/link"
 import Image from "next/image"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { ProductPrice } from "@/components/shared/product/product-price"
-import { Rating } from "@/components/shared/product/rating"
+import Link from "next/link"
 
 import type { Product } from "@/types"
+
+import { ProductPrice } from "@/components/shared/product/product-price"
+import { Rating } from "@/components/shared/product/rating"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 interface ProductCardProps {
   product: Product

@@ -1,3 +1,8 @@
+import Link from "next/link"
+
+import { EllipsisVerticalIcon, ShoppingCartIcon } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 import {
   Sheet,
   SheetContent,
@@ -6,10 +11,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+
 import { ModeToggle, UserButton } from "./components"
-import { EllipsisVerticalIcon, ShoppingCartIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
 
 export function Menu() {
   return (

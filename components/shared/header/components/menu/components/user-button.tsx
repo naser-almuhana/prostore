@@ -1,5 +1,10 @@
 import Link from "next/link"
 
+import { auth } from "@/auth"
+import { UserIcon } from "lucide-react"
+
+import { signOutUser } from "@/lib/actions/user.actions"
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -8,16 +13,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { UserIcon } from "lucide-react"
 
-export function UserButton() {
-  const session = {
-    user: {
-      name: "first Name",
-      email: "naser@gmaeil.com",
-      role: "admin",
-    },
-  }
+export async function UserButton() {
+  const session = await auth()
 
   if (!session) {
     return (
@@ -76,7 +74,7 @@ export function UserButton() {
           )}
 
           <DropdownMenuItem className="mb-1 p-0">
-            <form className="w-full">
+            <form action={signOutUser} className="w-full">
               <Button
                 className="h-4 w-full justify-start px-2 py-4"
                 variant="ghost"

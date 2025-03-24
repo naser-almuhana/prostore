@@ -1,6 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
+
 import { APP_NAME } from "@/lib/constants"
+
 import { CategoryDrawer, Menu, Search } from "./components"
 
 export function Header() {
