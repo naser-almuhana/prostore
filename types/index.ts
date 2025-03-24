@@ -6,4 +6,5 @@ export type Product = z.infer<typeof insertProductSchema> & {
   rating: string
   numReviews: number
   createdAt: Date
+  updatedAt: Date
 }

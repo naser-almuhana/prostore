@@ -11,6 +11,7 @@
     "db:generate": "npx prisma generate",
     "db:studio": "npx prisma studio",
     "db:seed": "npx tsx ./db/seed",
+    "db:delete": "npx tsx ./db/delete",
     "postinstall": "prisma generate"
   },
   "dependencies": {
