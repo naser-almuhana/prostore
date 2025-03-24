@@ -1,6 +1,7 @@
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import { getProductBySlug } from "@/lib/actions/product.actions"
+import { getAllProducts, getProductBySlug } from "@/lib/actions/product.actions"
 
 import ProductImages from "@/components/shared/product/product-images"
 import { ProductPrice } from "@/components/shared/product/product-price"
@@ -99,4 +100,26 @@ export default async function ProductDetailsPage({
       </section>
     </>
   )
+}
+
+export async function generateMetadata({
+  params,
+}: ProductDetailsPageProps): Promise<Metadata> {
+  // read route params
+  const { slug } = await params
+  // fetch data
+  const product = await getProductBySlug(slug)
+
+  return {
+    title: product?.name,
+  }
+}
+
+// Return a list of `params` to populate the [slug] dynamic segment
+export async function generateStaticParams() {
+  const products = await getAllProducts()
+
+  return products.map((product) => ({
+    slug: product.slug,
+  }))
 }
