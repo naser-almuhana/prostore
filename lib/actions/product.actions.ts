@@ -1,6 +1,6 @@
 "use server"
 
-import { Product } from "@/types"
+import type { Product } from "@/types"
 
 import { prisma } from "@/db/prisma"
 
@@ -30,5 +30,12 @@ export async function getAllProducts(): Promise<Product[]> {
 export async function getProductBySlug(slug: string) {
   return await prisma.product.findFirst({
     where: { slug },
+  })
+}
+
+// Get single product by it's id
+export async function getProductById(id: string) {
+  return await prisma.product.findFirst({
+    where: { id },
   })
 }

@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
+import { getMyCart } from "@/lib/actions/cart.actions"
 import { getAllProducts, getProductBySlug } from "@/lib/actions/product.actions"
 
+import { AddToCart } from "@/components/shared/product/add-to-cart"
 import ProductImages from "@/components/shared/product/product-images"
 import { ProductPrice } from "@/components/shared/product/product-price"
 import { Rating } from "@/components/shared/product/rating"
@@ -20,6 +22,8 @@ export default async function ProductDetailsPage({
 
   const product = await getProductBySlug(slug)
   if (!product) notFound()
+
+  const cart = await getMyCart()
 
   return (
     <>
@@ -53,14 +57,14 @@ export default async function ProductDetailsPage({
           {/* Action Column */}
           <div>
             <Card>
-              <CardContent className="p-4">
-                <div className="mb-2 flex justify-between">
+              <CardContent className="space-y-4 p-4">
+                <div className="flex justify-between">
                   <div>Price</div>
                   <div>
                     <ProductPrice value={Number(product.price)} />
                   </div>
                 </div>
-                <div className="mb-2 flex justify-between">
+                <div className="flex justify-between">
                   <div>Status</div>
                   {product.stock > 0 ? (
                     <Badge variant="outline">In Stock</Badge>
@@ -70,7 +74,17 @@ export default async function ProductDetailsPage({
                 </div>
                 {product.stock > 0 && (
                   <div className="flex-center">
-                    add to cart
+                    <AddToCart
+                      cart={cart}
+                      item={{
+                        productId: product.id,
+                        name: product.name,
+                        slug: product.slug,
+                        price: product.price,
+                        qty: 1,
+                        image: product.images![0],
+                      }}
+                    />
                     {/* <AddToCart
                       cart={cart}
                       item={{

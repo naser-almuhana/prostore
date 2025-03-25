@@ -4,6 +4,8 @@ import { isRedirectError } from "next/dist/client/components/redirect-error"
 
 import { signIn, signOut } from "@/auth"
 
+import type { ActionReturn } from "@/types"
+
 import { prisma } from "@/db/prisma"
 
 import { hash } from "@/lib/encrypt"
@@ -14,7 +16,7 @@ import { signInFormSchema, signUpFormSchema } from "@/lib/validators"
 export async function signInWithCredentials(
   prevState: unknown,
   formData: FormData,
-) {
+): ActionReturn {
   try {
     const user = signInFormSchema.parse({
       email: formData.get("email"),
@@ -46,7 +48,10 @@ export async function signOutUser() {
 }
 
 // Sign up user
-export async function signUpUser(prevState: unknown, formData: FormData) {
+export async function signUpUser(
+  prevState: unknown,
+  formData: FormData,
+): ActionReturn {
   try {
     const user = signUpFormSchema.parse({
       name: formData.get("name"),

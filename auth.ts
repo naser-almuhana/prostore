@@ -6,6 +6,8 @@ import { prisma } from "@/db/prisma"
 
 import { compare } from "@/lib/encrypt"
 
+import { authConfig } from "./auth.config"
+
 export const config = {
   pages: {
     signIn: "/sign-in",
@@ -55,6 +57,7 @@ export const config = {
     }),
   ],
   callbacks: {
+    ...authConfig.callbacks,
     async session({ session, user, trigger, token }) {
       // Set the user ID from the token
       session.user.id = token.sub ?? ""
