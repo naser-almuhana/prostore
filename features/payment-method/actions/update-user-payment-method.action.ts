@@ -1,6 +1,7 @@
 "use server"
 
 import { auth } from "@/auth"
+import { z } from "zod"
 
 import { ActionReturn } from "@/types"
 
@@ -8,25 +9,24 @@ import { prisma } from "@/db/prisma"
 
 import { formatError } from "@/lib/utils"
 
-import { shippingAddressSchema } from "@/features/shipping-address/schemas/shipping-address.schema"
-import { ShippingAddress } from "@/features/shipping-address/types"
+import { getUserById } from "@/features/auth/actions/get-user-by-id"
+import { paymentMethodSchema } from "@/features/payment-method/schemas/payment-method.schema"
 
-// Update the user's address
-export async function updateUserAddress(data: ShippingAddress): ActionReturn {
+// Update user's payment method
+export async function updateUserPaymentMethod(
+  data: z.infer<typeof paymentMethodSchema>,
+): ActionReturn {
   try {
     const session = await auth()
-
-    const currentUser = await prisma.user.findFirst({
-      where: { id: session?.user?.id },
-    })
+    const currentUser = await getUserById(session?.user?.id)
 
     if (!currentUser) throw new Error("User not found")
 
-    const address = shippingAddressSchema.parse(data)
+    const paymentMethod = paymentMethodSchema.parse(data)
 
     await prisma.user.update({
       where: { id: currentUser.id },
-      data: { address },
+      data: { paymentMethod: paymentMethod.type },
     })
 
     return {
