@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 
-import { getLatestProducts } from "@/lib/actions/product.actions"
-
-import { ProductList } from "@/components/shared/product/product-list"
+import { getLatestProducts } from "@/features/product/actions/get-latest-products.actions"
+import { ProductList } from "@/features/product/components/product-list"
 
 export const metadata: Metadata = {
   title: "Home",

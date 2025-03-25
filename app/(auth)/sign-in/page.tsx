@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
 
 import { auth } from "@/auth"
 
-import { APP_NAME } from "@/lib/constants"
+import { APP_NAME } from "@/constants"
 
 import {
   Card,
@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-import CredentialsSignInForm from "./credentials-signin-form"
+import CredentialsSignInForm from "@/features/auth/components/credentials-signin-form"
 
 export const metadata: Metadata = {
   title: "Sign In",

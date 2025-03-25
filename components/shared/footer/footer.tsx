@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { APP_NAME, GITHUB_REPO_URL } from "@/lib/constants"
+import { APP_NAME, GITHUB_REPO_URL } from "@/constants"
 
 import { Button } from "@/components/ui/button"
 

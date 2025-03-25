@@ -6,11 +6,11 @@ import { useCallback, useTransition } from "react"
 import { Loader2Icon, MinusIcon, PlusIcon } from "lucide-react"
 import { toast } from "sonner"
 
-import type { Cart, CartItem } from "@/types"
-
-import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.actions"
-
 import { Button } from "@/components/ui/button"
+
+import { addItemToCart } from "@/features/cart/actions/add-item-to-cart.action"
+import { removeItemFromCart } from "@/features/cart/actions/remove-item-from-cart.action"
+import type { Cart, CartItem } from "@/features/cart/types"
 
 interface AddToCartProps {
   item: CartItem

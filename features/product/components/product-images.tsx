@@ -9,7 +9,7 @@ interface ProductImagesProps {
   images: string[]
 }
 
-export default function ProductImages({ images }: ProductImagesProps) {
+export function ProductImages({ images }: ProductImagesProps) {
   const [current, setCurrent] = useState(0)
 
   return (

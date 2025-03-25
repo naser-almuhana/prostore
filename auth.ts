@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 
 import { prisma } from "@/db/prisma"
 
-import { compare } from "@/lib/encrypt"
+import { compare } from "@/features/auth/lib/encrypt"
 
 import { authConfig } from "./auth.config"
 

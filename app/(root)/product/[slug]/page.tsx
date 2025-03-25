@@ -1,15 +1,16 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import { getMyCart } from "@/lib/actions/cart.actions"
-import { getAllProducts, getProductBySlug } from "@/lib/actions/product.actions"
-
-import { AddToCart } from "@/components/shared/product/add-to-cart"
-import ProductImages from "@/components/shared/product/product-images"
-import { ProductPrice } from "@/components/shared/product/product-price"
-import { Rating } from "@/components/shared/product/rating"
+import { Rating } from "@/components/shared/rating"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+
+import { getMyCart } from "@/features/cart/actions/get-my-cart.action"
+import { getAllProducts } from "@/features/product/actions/get-all-products.action"
+import { getProductBySlug } from "@/features/product/actions/get-product-by-slug"
+import { AddToCart } from "@/features/product/components/add-to-cart"
+import { ProductImages } from "@/features/product/components/product-images"
+import { ProductPrice } from "@/features/product/components/product-price"
 
 interface ProductDetailsPageProps {
   params: Promise<{ slug: string }>
@@ -85,17 +86,6 @@ export default async function ProductDetailsPage({
                         image: product.images![0],
                       }}
                     />
-                    {/* <AddToCart
-                      cart={cart}
-                      item={{
-                        productId: product.id,
-                        name: product.name,
-                        slug: product.slug,
-                        price: product.price,
-                        qty: 1,
-                        image: product.images![0],
-                      }}
-                    /> */}
                   </div>
                 )}
               </CardContent>
