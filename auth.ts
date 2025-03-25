@@ -1,3 +1,5 @@
+import { cookies } from "next/headers"
+
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import NextAuth, { type NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
@@ -88,6 +90,42 @@ export const config = {
             where: { id: user.id },
             data: { name: token.name },
           })
+        }
+
+        if (trigger === "signIn" || trigger === "signUp") {
+          const cookiesObject = await cookies()
+          const sessionCartId = cookiesObject.get("sessionCartId")?.value
+          console.log({ sessionCartId })
+          if (sessionCartId) {
+            try {
+              // Use transaction to ensure atomic operations
+              await prisma.$transaction(async (tx) => {
+                // 1. Find the session cart
+                const sessionCart = await tx.cart.findFirst({
+                  where: { sessionCartId },
+                })
+
+                if (!sessionCart) return
+
+                // 2. Delete any existing user cart
+                await tx.cart.deleteMany({
+                  where: { userId: user.id },
+                })
+
+                // 3. Update the session cart to belong to the user
+                await tx.cart.update({
+                  where: { id: sessionCart.id },
+                  data: {
+                    userId: user.id,
+                    sessionCartId,
+                  },
+                })
+              })
+            } catch (error) {
+              console.error("Failed to migrate cart:", error)
+              // Fail silently - the user can still proceed
+            }
+          }
         }
       }
 

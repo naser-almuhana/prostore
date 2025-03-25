@@ -17,6 +17,7 @@ export function RemoveFromCartButton({ item }: { item: CartItem }) {
       disabled={isPending}
       variant="outline"
       type="button"
+      size="icon"
       onClick={() =>
         startTransition(async () => {
           const res = await removeItemFromCart(item.productId)
