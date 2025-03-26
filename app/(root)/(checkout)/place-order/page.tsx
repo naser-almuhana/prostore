@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 import { auth } from "@/auth"
@@ -12,6 +13,10 @@ import { PaymentMethodCard } from "@/components/shared/cards/payment-method-card
 import { ShippingAddressCard } from "@/components/shared/cards/shipping-address-card"
 
 import { PlaceOrderCard } from "./_components/place-order-card"
+
+export const metadata: Metadata = {
+  title: "Place Order",
+}
 
 export default async function PlaceOrderPage() {
   const cart = await getMyCart()

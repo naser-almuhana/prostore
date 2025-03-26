@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 import { auth } from "@/auth"
@@ -8,6 +9,10 @@ import { getMyCart } from "@/lib/actions/cart.actions"
 import { getUserById } from "@/lib/actions/users.actions"
 
 import { ShippingAddressForm } from "./_components/shipping-address-form"
+
+export const metadata: Metadata = {
+  title: "Shipping Address",
+}
 
 export default async function ShippingAddressPage() {
   const cart = await getMyCart()
