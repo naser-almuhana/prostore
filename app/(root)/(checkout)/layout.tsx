@@ -1,12 +1,10 @@
-import { ReactNode } from "react"
-
 import { CheckoutSteps } from "@/components/shared/checkout-steps"
 
-interface CheckoutLayoutProps {
-  children: ReactNode
-}
-
-export default function CheckoutLayout({ children }: CheckoutLayoutProps) {
+export default function CheckoutLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
     <div className="container mx-auto">
       <CheckoutSteps />

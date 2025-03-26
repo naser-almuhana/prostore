@@ -2,10 +2,12 @@ import { redirect } from "next/navigation"
 
 import { auth } from "@/auth"
 
-import { getUserById } from "@/features/auth/actions/get-user-by-id"
-import { getMyCart } from "@/features/cart/actions/get-my-cart.action"
-import { ShippingAddressForm } from "@/features/shipping-address/components/shipping-address-form"
-import { ShippingAddress } from "@/features/shipping-address/types"
+import type { ShippingAddress } from "@/types"
+
+import { getMyCart } from "@/lib/actions/cart.actions"
+import { getUserById } from "@/lib/actions/users.actions"
+
+import { ShippingAddressForm } from "./_components/shipping-address-form"
 
 export default async function ShippingAddressPage() {
   const cart = await getMyCart()

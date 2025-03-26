@@ -1,16 +1,16 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
+import { getMyCart } from "@/lib/actions/cart.actions"
+import { getAllProducts, getProductBySlug } from "@/lib/actions/product.actions"
+
 import { Rating } from "@/components/shared/rating"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 
-import { getMyCart } from "@/features/cart/actions/get-my-cart.action"
-import { getAllProducts } from "@/features/product/actions/get-all-products.action"
-import { getProductBySlug } from "@/features/product/actions/get-product-by-slug"
-import { AddToCart } from "@/features/product/components/add-to-cart"
-import { ProductImages } from "@/features/product/components/product-images"
-import { ProductPrice } from "@/features/product/components/product-price"
+import { ProductCartAction } from "./_components/product-cart-action"
+import { ProductImages } from "./_components/product-images"
+import { ProductPrice } from "./_components/product-price"
 
 interface ProductDetailsPageProps {
   params: Promise<{ slug: string }>
@@ -75,7 +75,7 @@ export default async function ProductDetailsPage({
                 </div>
                 {product.stock > 0 && (
                   <div className="flex-center">
-                    <AddToCart
+                    <ProductCartAction
                       cart={cart}
                       item={{
                         productId: product.id,

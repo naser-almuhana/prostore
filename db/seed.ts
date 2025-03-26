@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 
-import { hash } from "@/features/auth/lib/encrypt"
+import { hash } from "@/lib/encrypt"
 
 import sampleData from "./sample-data"
 

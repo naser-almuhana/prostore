@@ -3,15 +3,16 @@ import { notFound, redirect } from "next/navigation"
 
 import { auth } from "@/auth"
 
+import type { ShippingAddress } from "@/types"
+
+import { getOrderById } from "@/lib/actions/order.actions"
 import { formatId } from "@/lib/utils"
 
-import { OrderItemCard } from "@/components/shared/order-item-card"
+import { OrderItemCard } from "@/components/shared/cards/order-item-card"
+import { PaymentMethodCard } from "@/components/shared/cards/payment-method-card"
+import { ShippingAddressCard } from "@/components/shared/cards/shipping-address-card"
 
-import { getOrderById } from "@/features/order/actions/get-order-by-id.action"
-import { PaymentMethodOrderCard } from "@/features/order/components/payment-method-order-card"
-import { PaypalStripeCard } from "@/features/order/components/paypal-stripe-card"
-import { ShippingAddressOrderCard } from "@/features/order/components/shipping-address-order-card"
-import type { ShippingAddress } from "@/features/shipping-address/types"
+import { PaypalStripeCard } from "./_components/paypal-stripe-card"
 
 export const metadata: Metadata = {
   title: "Order Details",
@@ -56,15 +57,22 @@ export default async function OrderDetailsPage({
       <h1 className="py-4 text-2xl">Order {formatId(id)}</h1>
       <div className="grid md:grid-cols-3 md:gap-5">
         <div className="col-span-2 space-y-4 overflow-x-auto">
-          <PaymentMethodOrderCard
-            paidAt={paidAt}
-            isPaid={isPaid}
-            paymentMethod={paymentMethod}
+          <ShippingAddressCard
+            address={shippingAddress as ShippingAddress}
+            status={{
+              isDelivered,
+              deliveredAt,
+            }}
+            editHref={null} // Explicitly hide edit
           />
-          <ShippingAddressOrderCard
-            userAddress={shippingAddress as ShippingAddress}
-            isDelivered={isDelivered}
-            deliveredAt={deliveredAt}
+
+          <PaymentMethodCard
+            paymentMethod={paymentMethod}
+            status={{
+              isPaid,
+              paidAt,
+            }}
+            editHref={null} // Explicitly hide edit
           />
 
           <OrderItemCard items={orderitems} />

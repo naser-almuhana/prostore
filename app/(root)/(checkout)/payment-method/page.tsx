@@ -2,8 +2,9 @@ import type { Metadata } from "next"
 
 import { auth } from "@/auth"
 
-import { getUserById } from "@/features/auth/actions/get-user-by-id"
-import { PaymentMethodForm } from "@/features/payment-method/components/payment-method-form"
+import { getUserById } from "@/lib/actions/users.actions"
+
+import { PaymentMethodForm } from "./_components/payment-method-form"
 
 export const metadata: Metadata = {
   title: "Select Payment Method",

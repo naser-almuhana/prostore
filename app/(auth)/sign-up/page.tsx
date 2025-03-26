@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-import SignUpForm from "@/features/auth/components/sign-up-form"
+import SignUpForm from "./_components/sign-up-form"
 
 export const metadata: Metadata = {
   title: "Sign Up",

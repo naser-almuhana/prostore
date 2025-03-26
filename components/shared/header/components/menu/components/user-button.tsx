@@ -3,6 +3,8 @@ import Link from "next/link"
 import { auth } from "@/auth"
 import { UserIcon } from "lucide-react"
 
+import { signOutUser } from "@/lib/actions/auth.actions"
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -11,8 +13,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
-import { signOutUser } from "@/features/auth/actions/sign-out.action"
 
 export async function UserButton() {
   const session = await auth()

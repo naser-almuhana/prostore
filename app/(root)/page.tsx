@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 
-import { getLatestProducts } from "@/features/product/actions/get-latest-products.actions"
-import { ProductList } from "@/features/product/components/product-list"
+import { ProductList } from "@/app/(root)/product/[slug]/_components/product-list"
+
+import { getLatestProducts } from "@/lib/actions/product.actions"
 
 export const metadata: Metadata = {
   title: "Home",

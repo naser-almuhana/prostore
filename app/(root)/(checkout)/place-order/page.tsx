@@ -2,17 +2,16 @@ import { redirect } from "next/navigation"
 
 import { auth } from "@/auth"
 
-import { formatCurrency } from "@/lib/utils"
+import type { ShippingAddress } from "@/types"
 
-import { OrderItemCard } from "@/components/shared/order-item-card"
-import { Card, CardContent } from "@/components/ui/card"
+import { getMyCart } from "@/lib/actions/cart.actions"
+import { getUserById } from "@/lib/actions/users.actions"
 
-import { getUserById } from "@/features/auth/actions/get-user-by-id"
-import { getMyCart } from "@/features/cart/actions/get-my-cart.action"
-import { PaymentMethodCard } from "@/features/place-order/components/payment-method-card"
-import { PlaceOrderForm } from "@/features/place-order/components/place-order-form"
-import { ShippingAddressCard } from "@/features/place-order/components/shipping-address-card"
-import type { ShippingAddress } from "@/features/shipping-address/types"
+import { OrderItemCard } from "@/components/shared/cards/order-item-card"
+import { PaymentMethodCard } from "@/components/shared/cards/payment-method-card"
+import { ShippingAddressCard } from "@/components/shared/cards/shipping-address-card"
+
+import { PlaceOrderCard } from "./_components/place-order-card"
 
 export default async function PlaceOrderPage() {
   const cart = await getMyCart()
@@ -27,39 +26,31 @@ export default async function PlaceOrderPage() {
   if (!user.address) redirect("/shipping-address")
   if (!user.paymentMethod) redirect("/payment-method")
 
-  const userAddress = user.address as ShippingAddress
-
   return (
     <>
       <h1 className="pb-4 text-2xl">Place Order</h1>
       <div className="grid md:grid-cols-3 md:gap-5">
         <div className="space-y-4 overflow-x-auto md:col-span-2">
-          <ShippingAddressCard userAddress={userAddress} />
-          <PaymentMethodCard paymentMethod={user.paymentMethod} />
+          <ShippingAddressCard
+            address={user.address as ShippingAddress}
+            editHref="/shipping-address"
+            status={null} // Explicitly hide status
+          />
+
+          <PaymentMethodCard
+            paymentMethod={user.paymentMethod}
+            editHref="/payment-method"
+            status={null} // Explicitly hide status
+          />
           <OrderItemCard items={cart.items} isEditable />
         </div>
         <div>
-          <Card>
-            <CardContent className="gap-4 space-y-4 p-4">
-              <div className="flex justify-between">
-                <div>Items</div>
-                <div>{formatCurrency(cart.itemsPrice)}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Tax</div>
-                <div>{formatCurrency(cart.taxPrice)}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Shipping</div>
-                <div>{formatCurrency(cart.shippingPrice)}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Total</div>
-                <div>{formatCurrency(cart.totalPrice)}</div>
-              </div>
-              <PlaceOrderForm />
-            </CardContent>
-          </Card>
+          <PlaceOrderCard
+            itemsPrice={cart.itemsPrice}
+            taxPrice={cart.taxPrice}
+            shippingPrice={cart.shippingPrice}
+            totalPrice={cart.totalPrice}
+          />
         </div>
       </div>
     </>
