@@ -9,6 +9,7 @@ import {
   paymentMethodSchema,
   paymentResultSchema,
   shippingAddressSchema,
+  updateProfileSchema,
 } from "@/lib/validators"
 
 export type ActionReturn = Promise<{
@@ -43,3 +44,5 @@ export type Order = z.infer<typeof insertOrderSchema> & {
   paymentResult: PaymentResult
 }
 export type PaymentResult = z.infer<typeof paymentResultSchema>
+
+export type UpdateUserProfile = z.infer<typeof updateProfileSchema>

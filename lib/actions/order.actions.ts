@@ -14,6 +14,8 @@ import { getUserById } from "@/lib/actions/users.actions"
 import { convertToPlainObject, formatError } from "@/lib/utils"
 import { insertOrderSchema } from "@/lib/validators"
 
+import { PAGE_SIZE } from "@/constants"
+
 type CreateOrderReturn = Promise<{
   success: boolean
   message: string
@@ -201,7 +203,7 @@ export async function updateOrderToPaidCOD(orderId: string) {
   }
 }
 
-// Update COD order to delivered
+// Update order to delivered
 export async function deliverOrder(orderId: string) {
   try {
     const order = await getOrderById(orderId)
@@ -225,5 +227,33 @@ export async function deliverOrder(orderId: string) {
     }
   } catch (error) {
     return { success: false, message: formatError(error) }
+  }
+}
+
+// Get user's orders
+export async function getMyOrders({
+  limit = PAGE_SIZE,
+  page,
+}: {
+  limit?: number
+  page: number
+}) {
+  const session = await auth()
+  if (!session) throw new Error("User is not authorized")
+
+  const data = await prisma.order.findMany({
+    where: { userId: session?.user?.id },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: (page - 1) * limit,
+  })
+
+  const dataCount = await prisma.order.count({
+    where: { userId: session?.user?.id },
+  })
+
+  return {
+    data,
+    totalPages: Math.ceil(dataCount / limit),
   }
 }
