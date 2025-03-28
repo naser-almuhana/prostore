@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { getMyCart } from "@/lib/actions/cart.actions"
-import { getAllProducts, getProductBySlug } from "@/lib/actions/product.actions"
+import { getProductBySlug } from "@/lib/actions/product.actions"
 
 import { Rating } from "@/components/shared/rating"
 import { Badge } from "@/components/ui/badge"
@@ -38,7 +38,7 @@ export default async function ProductDetailsPage({
           <div className="col-span-2 p-5">
             <div className="flex flex-col gap-6">
               <p>
-                {product.brand} {product.category}
+                {product.brand} . {product.category}
               </p>
               <h1 className="h3-bold">{product.name}</h1>
               <Rating value={Number(product.rating)} />
@@ -119,11 +119,11 @@ export async function generateMetadata({
   }
 }
 
-// Return a list of `params` to populate the [slug] dynamic segment
-export async function generateStaticParams() {
-  const products = await getAllProducts()
+// // Return a list of `params` to populate the [slug] dynamic segment
+// export async function generateStaticParams() {
+//   const products = await getAllProducts()
 
-  return products.map((product) => ({
-    slug: product.slug,
-  }))
-}
+//   return products.map((product) => ({
+//     slug: product.slug,
+//   }))
+// }

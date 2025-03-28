@@ -4,8 +4,9 @@ import { revalidatePath } from "next/cache"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
 
 import { auth } from "@/auth"
+import { Prisma } from "@prisma/client"
 
-import type { PaymentResult } from "@/types"
+import type { ActionReturn, PaymentResult, SalesDataType } from "@/types"
 
 import { prisma } from "@/db/prisma"
 
@@ -255,5 +256,111 @@ export async function getMyOrders({
   return {
     data,
     totalPages: Math.ceil(dataCount / limit),
+  }
+}
+
+// Get sales data and order summary
+export async function getOrderSummary() {
+  // Get counts for each resource
+  const ordersCount = await prisma.order.count()
+  const productsCount = await prisma.product.count()
+  const usersCount = await prisma.user.count()
+  // Calculate the total sales
+  const totalSales = await prisma.order.aggregate({
+    _sum: { totalPrice: true },
+  })
+
+  // Get monthly sales
+  const salesDataRaw = await prisma.$queryRaw<
+    Array<{ month: string; totalSales: Prisma.Decimal }>
+  >`SELECT to_char("createdAt", 'MM/YY') as "month", sum("totalPrice") as "totalSales" FROM "Order" GROUP BY to_char("createdAt", 'MM/YY')`
+
+  const salesData: SalesDataType = salesDataRaw
+    .map((entry) => ({
+      month: entry.month,
+      totalSales: Number(entry.totalSales),
+    }))
+    .sort((a, b) => {
+      // Convert MM/YY to a Date object for proper sorting
+      const [aMonth, aYear] = a.month.split("/").map(Number)
+      const [bMonth, bYear] = b.month.split("/").map(Number)
+      return (
+        new Date(aYear, aMonth - 1).getTime() -
+        new Date(bYear, bMonth - 1).getTime()
+      )
+    })
+
+  // Get latest orders
+  const latestOrders = await prisma.order.findMany({
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: { select: { name: true } },
+    },
+    take: 6,
+  })
+
+  return {
+    ordersCount,
+    productsCount,
+    usersCount,
+    totalSales,
+    latestOrders,
+    salesData,
+  }
+}
+
+// Get all orders
+export async function getAllOrders({
+  limit = PAGE_SIZE,
+  page,
+  query,
+}: {
+  limit?: number
+  page: number
+  query: string
+}) {
+  const queryFilter: Prisma.OrderWhereInput =
+    query && query !== "all"
+      ? {
+          user: {
+            name: {
+              contains: query,
+              mode: "insensitive",
+            } as Prisma.StringFilter,
+          },
+        }
+      : {}
+
+  const data = await prisma.order.findMany({
+    where: {
+      ...queryFilter,
+    },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: (page - 1) * limit,
+    include: { user: { select: { name: true } } },
+  })
+
+  const dataCount = await prisma.order.count()
+
+  return {
+    data,
+    totalPages: Math.ceil(dataCount / limit),
+  }
+}
+
+// Delete an order
+export async function deleteOrder(id: string): ActionReturn {
+  try {
+    await prisma.order.delete({ where: { id } })
+
+    revalidatePath("/admin/orders")
+
+    return {
+      success: true,
+      message: "Order deleted successfully",
+    }
+  } catch (error) {
+    return { success: false, message: formatError(error) }
   }
 }

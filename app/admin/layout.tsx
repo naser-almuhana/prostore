@@ -1,12 +1,14 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { APP_NAME, USER_LINKS } from "@/constants"
+import { ADMIN_LINKS, APP_NAME } from "@/constants"
 
 import { Menu } from "@/components/shared/header/components/menu"
 import { MainNav } from "@/components/shared/nav-main"
 
-export default function UserLayout({
+import AdminSearch from "./_components/admin-search"
+
+export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -24,14 +26,15 @@ export default function UserLayout({
                 alt={APP_NAME}
               />
             </Link>
-            <MainNav links={USER_LINKS} className="mx-6" />
+            <MainNav links={ADMIN_LINKS} className="mx-6" />
             <div className="ml-auto flex items-center space-x-4">
+              <AdminSearch />
               <Menu />
             </div>
           </div>
         </div>
 
-        <div className="container mx-auto flex-1 space-y-4 p-8 pt-6">
+        <div className="container mx-auto flex-1 space-y-4 px-6 pt-6 pb-8">
           {children}
         </div>
       </div>

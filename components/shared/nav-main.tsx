@@ -6,22 +6,18 @@ import React from "react"
 
 import { cn } from "@/lib/utils"
 
-const links = [
-  {
-    title: "Profile",
-    href: "/user/profile",
-  },
-  {
-    title: "Orders",
-    href: "/user/orders",
-  },
-]
+interface NavLink {
+  title: string
+  href: string
+}
 
-export function MainNav({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) {
+interface MainNavProps extends React.HTMLAttributes<HTMLElement> {
+  links: NavLink[]
+}
+
+export function MainNav({ links, className, ...props }: MainNavProps) {
   const pathname = usePathname()
+
   return (
     <nav
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}

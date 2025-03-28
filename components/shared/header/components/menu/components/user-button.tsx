@@ -5,6 +5,8 @@ import { UserIcon } from "lucide-react"
 
 import { signOutUser } from "@/lib/actions/auth.actions"
 
+import { ADMIN_LINKS } from "@/constants"
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -67,7 +69,7 @@ export async function UserButton() {
 
           {session?.user?.role === "admin" && (
             <DropdownMenuItem>
-              <Link href="/admin/overview" className="w-full">
+              <Link href={ADMIN_LINKS[0].href} className="w-full">
                 Admin
               </Link>
             </DropdownMenuItem>

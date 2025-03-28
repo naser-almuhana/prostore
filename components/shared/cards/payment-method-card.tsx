@@ -1,5 +1,5 @@
 // components/checkout/payment-method-card.tsx
-import { StatusCard } from "@/components/shared/status-card"
+import { StatusCard } from "@/components/shared/cards/status-card"
 
 interface PaymentMethodCardProps {
   paymentMethod: string

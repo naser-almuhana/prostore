@@ -4,6 +4,7 @@ import { getMyOrders } from "@/lib/actions/order.actions"
 import { formatCurrency, formatDateTime, formatId } from "@/lib/utils"
 
 import { AppPagination } from "@/components/shared/app-pagination"
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -54,9 +55,9 @@ export async function OrdersTable({ searchParams }: OrdersTableProps) {
                   : "Not Delivered"}
               </TableCell>
               <TableCell>
-                <Link href={`/order/${order.id}`}>
-                  <span className="px-2">Details</span>
-                </Link>
+                <Button asChild variant="outline" size="sm">
+                  <Link href={`/order/${order.id}`}>Details</Link>
+                </Button>
               </TableCell>
             </TableRow>
           ))}

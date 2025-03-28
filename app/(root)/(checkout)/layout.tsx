@@ -1,4 +1,4 @@
-import { CheckoutSteps } from "@/components/shared/checkout-steps"
+import { CheckoutSteps } from "./_components/checkout-steps"
 
 export default function CheckoutLayout({
   children,

@@ -8,10 +8,7 @@ import { useFormStatus } from "react-dom"
 
 import { signInWithCredentials } from "@/lib/actions/auth.actions"
 
-import {
-  // adminSignInDefaultValues,
-  userSignInDefaultValues,
-} from "@/constants"
+import { signInDefaultValues } from "@/constants"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -48,8 +45,7 @@ const CredentialsSignInForm = () => {
             type="email"
             required
             autoComplete="email"
-            defaultValue={userSignInDefaultValues.email}
-            // defaultValue={adminSignInDefaultValues.email}
+            defaultValue={signInDefaultValues.email}
           />
         </div>
         <div className="space-y-2">
@@ -60,8 +56,7 @@ const CredentialsSignInForm = () => {
             type="password"
             required
             autoComplete="password"
-            defaultValue={userSignInDefaultValues.password}
-            // defaultValue={adminSignInDefaultValues.password}
+            defaultValue={signInDefaultValues.password}
           />
         </div>
         <div>

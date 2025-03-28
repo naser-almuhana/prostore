@@ -1,3 +1,4 @@
+import { LucideProps, icons } from "lucide-react"
 import { z } from "zod"
 
 import {
@@ -9,7 +10,9 @@ import {
   paymentMethodSchema,
   paymentResultSchema,
   shippingAddressSchema,
+  updateProductSchema,
   updateProfileSchema,
+  updateUserSchema,
 } from "@/lib/validators"
 
 export type ActionReturn = Promise<{
@@ -24,6 +27,10 @@ export type Product = z.infer<typeof insertProductSchema> & {
   createdAt: Date
   updatedAt: Date
 }
+export type InsertProduct = z.infer<typeof insertProductSchema>
+export type UpdateProduct = z.infer<typeof updateProductSchema>
+
+export type UpdateUser = z.infer<typeof updateUserSchema>
 
 export type CartItem = z.infer<typeof cartItemSchema>
 export type Cart = z.infer<typeof insertCartSchema>
@@ -44,5 +51,15 @@ export type Order = z.infer<typeof insertOrderSchema> & {
   paymentResult: PaymentResult
 }
 export type PaymentResult = z.infer<typeof paymentResultSchema>
+export type SalesDataType = {
+  month: string
+  totalSales: number
+}[]
 
 export type UpdateUserProfile = z.infer<typeof updateProfileSchema>
+
+// ui
+export type IconType = {
+  name: keyof typeof icons
+  props?: LucideProps
+}

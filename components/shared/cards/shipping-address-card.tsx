@@ -1,7 +1,7 @@
 // components/checkout/shipping-address-card.tsx
 import type { ShippingAddress } from "@/types"
 
-import { StatusCard } from "@/components/shared/status-card"
+import { StatusCard } from "@/components/shared/cards/status-card"
 
 interface ShippingAddressCardProps {
   address: ShippingAddress

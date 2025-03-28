@@ -9,11 +9,11 @@ export const GITHUB_REPO_URL =
   process.env.GITHUB_REPO_URL || "https://github.com/naseralmuhana/prostore"
 
 // auth
-export const userSignInDefaultValues = {
-  email: "user@example.com",
-  password: "123456",
-}
-export const adminSignInDefaultValues = {
+// export const signInDefaultValues = {
+//   email: "user@example.com",
+//   password: "123456",
+// }
+export const signInDefaultValues = {
   email: "admin@example.com",
   password: "123456",
 }
@@ -21,6 +21,21 @@ export const adminSignInDefaultValues = {
 // product
 export const LATEST_PRODUCTS_LIMIT =
   Number(process.env.LATEST_PRODUCTS_LIMIT) || 4
+
+export const productDefaultValues = {
+  name: "",
+  slug: "",
+  category: "",
+  images: [],
+  brand: "",
+  description: "",
+  price: "0",
+  stock: 0,
+  rating: "0",
+  numReviews: "0",
+  isFeatured: false,
+  banner: null,
+}
 
 // cart
 export const DEFAULT_SHIPPING_PRICE =
@@ -45,5 +60,36 @@ export const PAYMENT_METHODS = process.env.PAYMENT_METHODS
 export const DEFAULT_PAYMENT_METHOD =
   process.env.DEFAULT_PAYMENT_METHOD || "PayPal"
 
-// user/orders
 export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 12
+
+// nav-main
+export const ADMIN_LINKS = [
+  { title: "Dashboard", href: "/admin/dashboard" },
+  {
+    title: "Products",
+    href: "/admin/products",
+  },
+  {
+    title: "Orders",
+    href: "/admin/orders",
+  },
+  {
+    title: "Users",
+    href: "/admin/users",
+  },
+]
+
+export const USER_LINKS = [
+  { title: "Profile", href: "/user/profile" },
+  { title: "Orders", href: "/user/orders" },
+]
+
+export const USER_ROLES = process.env.USER_ROLES
+  ? process.env.USER_ROLES.split(", ")
+  : ["admin", "user"]
+
+export const userDefaultValues = {
+  name: "",
+  email: "",
+  role: USER_ROLES[1],
+}
