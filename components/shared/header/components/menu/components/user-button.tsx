@@ -3,8 +3,6 @@ import Link from "next/link"
 import { auth } from "@/auth"
 import { UserIcon } from "lucide-react"
 
-import { signOutUser } from "@/lib/actions/auth.actions"
-
 import { ADMIN_LINKS } from "@/constants"
 
 import { Button } from "@/components/ui/button"
@@ -15,6 +13,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
+import { SignOutButton } from "./sign-out-button"
 
 export async function UserButton() {
   const session = await auth()
@@ -76,14 +76,7 @@ export async function UserButton() {
           )}
 
           <DropdownMenuItem className="mb-1 p-0">
-            <form action={signOutUser} className="w-full">
-              <Button
-                className="h-4 w-full justify-start px-2 py-4"
-                variant="ghost"
-              >
-                Sign Out
-              </Button>
-            </form>
+            <SignOutButton />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

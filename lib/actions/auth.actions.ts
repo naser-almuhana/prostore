@@ -12,7 +12,7 @@ import { hash } from "@/lib/encrypt"
 import { formatError } from "@/lib/utils"
 import { signInFormSchema, signUpFormSchema } from "@/lib/validators"
 
-import { getMyCart } from "./cart.actions"
+// import { getMyCart } from "./cart.actions"
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -77,13 +77,14 @@ export async function signUpUser(
 
 // Sign user out
 export async function signOutUser() {
-  // get current users cart and delete it so it does not persist to next user
-  const currentCart = await getMyCart()
+  // console.log(callbackUrl)
+  // // get current users cart and delete it so it does not persist to next user
+  // const currentCart = await getMyCart()
 
-  if (currentCart?.id) {
-    await prisma.cart.delete({ where: { id: currentCart.id } })
-  } else {
-    console.warn("No cart found for deletion.")
-  }
+  // if (currentCart?.id) {
+  //   await prisma.cart.delete({ where: { id: currentCart.id } })
+  // } else {
+  //   console.warn("No cart found for deletion.")
+  // }
   await signOut()
 }

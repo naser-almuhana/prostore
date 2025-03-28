@@ -6,8 +6,11 @@ export const authConfig = {
   providers: [], // Required by NextAuthConfig type
   callbacks: {
     authorized({ request, auth }) {
+      // Get pathname from the req URL object
+      const { pathname } = request.nextUrl
+
       // Array of regex patterns of paths we want to protect
-      const protectedPaths = [
+      const isProtected = [
         /\/shipping-address/,
         /\/payment-method/,
         /\/place-order/,
@@ -15,12 +18,10 @@ export const authConfig = {
         /\/user\/(.*)/,
         /\/order\/(.*)/,
         /\/admin/,
-      ]
+      ].some((p) => p.test(pathname))
 
-      // Get pathname from the req URL object
-      const { pathname } = request.nextUrl
       // Check if user is not authenticated and accessing a protected path
-      if (!auth && protectedPaths.some((p) => p.test(pathname))) return false
+      if (!auth && isProtected) return false
 
       // Check for session cart cookie
       if (!request.cookies.get("sessionCartId")) {
