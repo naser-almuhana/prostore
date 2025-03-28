@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table"
 
 export const metadata: Metadata = {
-  title: "My Orders",
+  title: "Admin Orders",
 }
 
 interface AdminOrdersPageProps {

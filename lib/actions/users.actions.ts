@@ -1,6 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { unstable_cache } from "next/cache"
 
 import { auth } from "@/auth"
 import { Prisma } from "@prisma/client"
@@ -108,42 +109,50 @@ export async function updateProfile(user: {
   }
 }
 
-// Get all the users
-export async function getAllUsers({
-  limit = PAGE_SIZE,
-  page,
-  query,
-}: {
-  limit?: number
-  page: number
-  query: string
-}) {
-  const queryFilter: Prisma.UserWhereInput =
-    query && query !== "all"
-      ? {
-          name: {
-            contains: query,
-            mode: "insensitive",
-          } as Prisma.StringFilter,
-        }
-      : {}
+// Get all users - admin
+export const getAllUsers = unstable_cache(
+  async ({
+    limit = PAGE_SIZE,
+    page,
+    query,
+  }: {
+    limit?: number
+    page: number
+    query: string
+  }) => {
+    const queryFilter: Prisma.UserWhereInput =
+      query && query !== "all"
+        ? {
+            name: {
+              contains: query,
+              mode: "insensitive",
+            } as Prisma.StringFilter,
+          }
+        : {}
 
-  const data = await prisma.user.findMany({
-    where: {
-      ...queryFilter,
-    },
-    orderBy: { createdAt: "desc" },
-    take: limit,
-    skip: (page - 1) * limit,
-  })
+    const data = await prisma.user.findMany({
+      where: {
+        ...queryFilter,
+      },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip: (page - 1) * limit,
+    })
 
-  const dataCount = await prisma.user.count()
+    const dataCount = await prisma.user.count({
+      where: {
+        ...queryFilter,
+      },
+    })
 
-  return {
-    data,
-    totalPages: Math.ceil(dataCount / limit),
-  }
-}
+    return {
+      data,
+      totalPages: Math.ceil(dataCount / limit),
+    }
+  },
+  ["getAllUsers"], // Cache key
+  { revalidate: 60 * 60 }, // Cache expires every 60 seconds
+)
 
 // Delete a user
 export async function deleteUser(id: string) {

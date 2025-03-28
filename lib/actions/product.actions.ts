@@ -1,6 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { unstable_cache } from "next/cache"
 
 import { Prisma } from "@prisma/client"
 
@@ -18,15 +19,19 @@ import { insertProductSchema, updateProductSchema } from "@/lib/validators"
 
 import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from "@/constants"
 
-// Get latest products
-export async function getLatestProducts(): Promise<Product[]> {
-  const data = await prisma.product.findMany({
-    take: LATEST_PRODUCTS_LIMIT,
-    orderBy: { createdAt: "desc" },
-  })
+//  get the latest products
+export const getLatestProducts = unstable_cache(
+  async (): Promise<Product[]> => {
+    const data = await prisma.product.findMany({
+      take: LATEST_PRODUCTS_LIMIT,
+      orderBy: { createdAt: "desc" },
+    })
 
-  return convertToPlainObject(data)
-}
+    return convertToPlainObject(data)
+  },
+  ["getLatestProducts"], // Cache key
+  { revalidate: 60 * 60 }, // Cache expires every 60 seconds
+)
 
 // Get single product by it's id
 export async function getProductById(id: string) {
@@ -57,76 +62,87 @@ type GetAllProductsOptions = {
 }
 
 // Get all products
-export async function getAllProducts({
-  query,
-  limit = PAGE_SIZE,
-  page,
-  category,
-  price,
-  rating,
-  sort,
-}: GetAllProductsOptions) {
-  // Query filter
-  const queryFilter: Prisma.ProductWhereInput =
-    query && query !== "all"
-      ? {
-          name: {
-            contains: query,
-            mode: "insensitive",
-          } as Prisma.StringFilter,
-        }
-      : {}
+export const getAllProducts = unstable_cache(
+  async ({
+    query,
+    limit = PAGE_SIZE,
+    page,
+    category,
+    price,
+    rating,
+    sort,
+  }: GetAllProductsOptions) => {
+    // Query filter
+    const queryFilter: Prisma.ProductWhereInput =
+      query && query !== "all"
+        ? {
+            name: {
+              contains: query,
+              mode: "insensitive",
+            } as Prisma.StringFilter,
+          }
+        : {}
 
-  // Category filter
-  const categoryFilter = category && category !== "all" ? { category } : {}
+    // Category filter
+    const categoryFilter = category && category !== "all" ? { category } : {}
 
-  // Price filter
-  const priceFilter: Prisma.ProductWhereInput =
-    price && price !== "all"
-      ? {
-          price: {
-            gte: Number(price.split("-")[0]),
-            lte: Number(price.split("-")[1]),
-          },
-        }
-      : {}
+    // Price filter
+    const priceFilter: Prisma.ProductWhereInput =
+      price && price !== "all"
+        ? {
+            price: {
+              gte: Number(price.split("-")[0]),
+              lte: Number(price.split("-")[1]),
+            },
+          }
+        : {}
 
-  // Rating filter
-  const ratingFilter =
-    rating && rating !== "all"
-      ? {
-          rating: {
-            gte: Number(rating),
-          },
-        }
-      : {}
+    // Rating filter
+    const ratingFilter =
+      rating && rating !== "all"
+        ? {
+            rating: {
+              gte: Number(rating),
+            },
+          }
+        : {}
 
-  const data = await prisma.product.findMany({
-    where: {
-      ...queryFilter,
-      ...categoryFilter,
-      ...priceFilter,
-      ...ratingFilter,
-    },
-    orderBy:
-      sort === "lowest"
-        ? { price: "asc" }
-        : sort === "highest"
-          ? { price: "desc" }
-          : sort === "rating"
-            ? { rating: "desc" }
-            : { createdAt: "desc" },
-    skip: (page - 1) * limit,
-    take: limit,
-  })
+    const data = await prisma.product.findMany({
+      where: {
+        ...queryFilter,
+        ...categoryFilter,
+        ...priceFilter,
+        ...ratingFilter,
+      },
+      orderBy:
+        sort === "lowest"
+          ? { price: "asc" }
+          : sort === "highest"
+            ? { price: "desc" }
+            : sort === "rating"
+              ? { rating: "desc" }
+              : { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+    })
 
-  const dataCount = await prisma.product.count()
+    const dataCount = await prisma.product.count({
+      where: {
+        ...queryFilter,
+        ...categoryFilter,
+        ...priceFilter,
+        ...ratingFilter,
+      },
+    })
 
-  return {
-    data,
-    totalPages: Math.ceil(dataCount / limit),
-  }
-}
+    return {
+      data,
+      totalPages: Math.ceil(dataCount / limit),
+    }
+  },
+  ["getAllProducts"], // Cache key
+  { revalidate: 60 * 60 }, // Cache expires every 60 seconds
+)
 
 // Delete a product
 export async function deleteProduct(id: string) {

@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, unstable_cache } from "next/cache"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
 
 import { auth } from "@/auth"
@@ -310,44 +310,46 @@ export async function getOrderSummary() {
 }
 
 // Get all orders
-export async function getAllOrders({
-  limit = PAGE_SIZE,
-  page,
-  query,
-}: {
-  limit?: number
-  page: number
-  query: string
-}) {
-  const queryFilter: Prisma.OrderWhereInput =
-    query && query !== "all"
-      ? {
-          user: {
-            name: {
-              contains: query,
-              mode: "insensitive",
-            } as Prisma.StringFilter,
-          },
-        }
-      : {}
+export const getAllOrders = unstable_cache(
+  async ({
+    limit = PAGE_SIZE,
+    page,
+    query,
+  }: {
+    limit?: number
+    page: number
+    query: string
+  }) => {
+    const queryFilter: Prisma.OrderWhereInput =
+      query && query !== "all"
+        ? {
+            user: {
+              name: {
+                contains: query,
+                mode: "insensitive",
+              } as Prisma.StringFilter,
+            },
+          }
+        : {}
 
-  const data = await prisma.order.findMany({
-    where: {
-      ...queryFilter,
-    },
-    orderBy: { createdAt: "desc" },
-    take: limit,
-    skip: (page - 1) * limit,
-    include: { user: { select: { name: true } } },
-  })
+    const data = await prisma.order.findMany({
+      where: { ...queryFilter },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip: (page - 1) * limit,
+      include: { user: { select: { name: true } } },
+    })
 
-  const dataCount = await prisma.order.count()
+    const dataCount = await prisma.order.count()
 
-  return {
-    data,
-    totalPages: Math.ceil(dataCount / limit),
-  }
-}
+    return {
+      data,
+      totalPages: Math.ceil(dataCount / limit),
+    }
+  },
+  ["all-orders"],
+  { revalidate: 60 * 60 },
+)
 
 // Delete an order
 export async function deleteOrder(id: string): ActionReturn {
