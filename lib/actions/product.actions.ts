@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { unstable_cache } from "next/cache"
 
 import { Prisma } from "@prisma/client"
@@ -19,6 +19,16 @@ import { insertProductSchema, updateProductSchema } from "@/lib/validators"
 
 import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from "@/constants"
 
+type GetAllProductsOptions = {
+  query?: string
+  limit?: number
+  page: number
+  category?: string
+  price?: string
+  rating?: string
+  sort?: string
+}
+
 //  get the latest products
 export const getLatestProducts = unstable_cache(
   async (): Promise<Product[]> => {
@@ -30,8 +40,19 @@ export const getLatestProducts = unstable_cache(
     return convertToPlainObject(data)
   },
   ["getLatestProducts"], // Cache key
-  { revalidate: 60 * 60 }, // Cache expires every 60 seconds
+  { revalidate: 60 * 60, tags: ["getLatestProducts"] }, // Cache expires every 60 seconds
 )
+
+// Get featured products
+export async function getFeaturedProducts() {
+  const data = await prisma.product.findMany({
+    where: { isFeatured: true },
+    orderBy: { createdAt: "desc" },
+    take: 4,
+  })
+
+  return convertToPlainObject(data)
+}
 
 // Get single product by it's id
 export async function getProductById(id: string) {
@@ -49,16 +70,6 @@ export async function getProductBySlug(slug: string) {
   return await prisma.product.findFirst({
     where: { slug },
   })
-}
-
-type GetAllProductsOptions = {
-  query: string
-  limit?: number
-  page: number
-  category?: string
-  price?: string
-  rating?: string
-  sort?: string
 }
 
 // Get all products
@@ -107,6 +118,9 @@ export const getAllProducts = unstable_cache(
           }
         : {}
 
+    const pageNumber = Number(page) || 1 // Default to page 1 if undefined
+    const skip = (pageNumber - 1) * limit
+
     const data = await prisma.product.findMany({
       where: {
         ...queryFilter,
@@ -122,7 +136,7 @@ export const getAllProducts = unstable_cache(
             : sort === "rating"
               ? { rating: "desc" }
               : { createdAt: "desc" },
-      skip: (page - 1) * limit,
+      skip,
       take: limit,
     })
 
@@ -141,8 +155,20 @@ export const getAllProducts = unstable_cache(
     }
   },
   ["getAllProducts"], // Cache key
-  { revalidate: 60 * 60 }, // Cache expires every 60 seconds
+  { revalidate: 60 * 60, tags: ["getAllProducts"] }, // Cache expires every 60 seconds
 )
+
+// Get all categories with product counts
+export async function getAllCategories() {
+  const data = await prisma.product.groupBy({
+    by: ["category"], // Group by category
+    _count: {
+      category: true, // Count the number of products per category
+    },
+  })
+
+  return convertToPlainObject(data)
+}
 
 // Delete a product
 export async function deleteProduct(id: string) {
@@ -195,6 +221,7 @@ export async function updateProduct(data: UpdateProduct): ActionReturn {
     })
 
     revalidatePath("/admin/products")
+    revalidateTag("getLatestProducts")
 
     return {
       success: true,

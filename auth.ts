@@ -95,7 +95,7 @@ export const config = {
         if (trigger === "signIn" || trigger === "signUp") {
           const cookiesObject = await cookies()
           const sessionCartId = cookiesObject.get("sessionCartId")?.value
-          console.log({ sessionCartId })
+
           if (sessionCartId) {
             try {
               // Use transaction to ensure atomic operations

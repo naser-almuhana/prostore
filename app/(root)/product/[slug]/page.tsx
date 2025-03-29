@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
+import { auth } from "@/auth"
+
 import { getMyCart } from "@/lib/actions/cart.actions"
 import { getProductBySlug } from "@/lib/actions/product.actions"
 
@@ -11,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ProductCartAction } from "./_components/product-cart-action"
 import { ProductImages } from "./_components/product-images"
 import { ProductPrice } from "./_components/product-price"
+import { ReviewList } from "./_components/review-list"
 
 interface ProductDetailsPageProps {
   params: Promise<{ slug: string }>
@@ -20,10 +23,13 @@ export default async function ProductDetailsPage({
   params,
 }: ProductDetailsPageProps) {
   const { slug } = await params
+  const session = await auth()
 
   const product = await getProductBySlug(slug)
   if (!product) notFound()
 
+  const userId = session?.user?.id
+  const userRole = session?.user?.role
   const cart = await getMyCart()
 
   return (
@@ -95,12 +101,12 @@ export default async function ProductDetailsPage({
       </section>
       <section className="mt-10">
         <h2 className="h2-bold mb-5">Customer Reviews</h2>
-        review List
-        {/* <ReviewList
+        <ReviewList
+          userRole={userRole || ""}
           userId={userId || ""}
           productId={product.id}
           productSlug={product.slug}
-        /> */}
+        />
       </section>
     </>
   )

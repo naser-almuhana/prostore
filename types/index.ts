@@ -7,6 +7,7 @@ import {
   insertOrderItemSchema,
   insertOrderSchema,
   insertProductSchema,
+  insertReviewSchema,
   paymentMethodSchema,
   paymentResultSchema,
   shippingAddressSchema,
@@ -57,6 +58,13 @@ export type SalesDataType = {
 }[]
 
 export type UpdateUserProfile = z.infer<typeof updateProfileSchema>
+
+export type InsertReview = z.infer<typeof insertReviewSchema>
+export type Review = z.infer<typeof insertReviewSchema> & {
+  id: string
+  createdAt: Date
+  user?: { name: string }
+}
 
 // ui
 export type IconType = {

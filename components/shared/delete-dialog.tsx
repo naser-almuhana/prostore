@@ -5,8 +5,6 @@ import { useTransition } from "react"
 
 import { toast } from "sonner"
 
-import { Button } from "@/components/ui/button"
-
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -16,7 +14,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../ui/alert-dialog"
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 
 interface DeleteDialogProps {
   id: string

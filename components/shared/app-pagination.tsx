@@ -32,7 +32,6 @@ export function AppPagination({
   const handleClick = (btnType: string) => {
     const pageValue = btnType === "next" ? Number(page) + 1 : Number(page) - 1
 
-    console.log(pageValue)
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
       key: urlParamName || "page",

@@ -1,11 +1,14 @@
 import Image from "next/image"
 import Link from "next/link"
 
+import { getAllCategories } from "@/lib/actions/product.actions"
+
 import { APP_NAME } from "@/constants"
 
 import { CategoryDrawer, Menu, Search } from "./components"
 
-export function Header() {
+export async function Header() {
+  const categories = await getAllCategories()
   return (
     <header className="w-full border-b">
       <div className="wrapper flex-between">
@@ -25,7 +28,7 @@ export function Header() {
           </Link>
         </div>
         <div className="hidden md:block">
-          <Search />
+          <Search categories={categories} />
         </div>
         <Menu />
       </div>
