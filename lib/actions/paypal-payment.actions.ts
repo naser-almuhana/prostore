@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { auth } from "@/auth"
 
 import type { PaymentResult } from "@/types"
 
@@ -56,6 +56,9 @@ export async function approvePayPalOrder(
   data: { orderID: string }, // paymentResult id
 ) {
   try {
+    const session = await auth()
+    if (!session) throw new Error("User is not authorized")
+
     // Get order from database
     const order = await getOrderById(orderId)
     if (!order) throw new Error("Order not found")
@@ -81,8 +84,6 @@ export async function approvePayPalOrder(
           captureData.purchase_units[0]?.payments?.captures[0]?.amount?.value,
       },
     })
-
-    revalidatePath(`/order/${orderId}`)
 
     return {
       success: true,

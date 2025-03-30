@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath, unstable_cache } from "next/cache"
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
 
 import { auth } from "@/auth"
@@ -102,6 +102,10 @@ export async function createOrder(): CreateOrderReturn {
 
     if (!insertedOrderId) throw new Error("Order not created")
 
+    revalidateTag(`orders-${userId}`) // For getMyOrders cache
+    // ✅ Invalidate the cache for `getAllOrders` after creating a new order
+    revalidateTag("all-orders")
+
     return {
       success: true,
       message: "Order created",
@@ -171,6 +175,12 @@ export async function updateOrderToPaid({
     })
   })
 
+  revalidatePath(`/order/${orderId}`)
+  // ✅ Invalidate the cache for `getMyOrders` after creating a new order
+  revalidateTag(`orders-${order.userId}`)
+  // ✅ Invalidate the cache for `getAllOrders` after creating a new order
+  revalidateTag("all-orders")
+
   // Get updated order after transaction
   const updatedOrder = await prisma.order.findFirst({
     where: { id: orderId },
@@ -196,8 +206,6 @@ export async function updateOrderToPaidCOD(orderId: string) {
   try {
     await updateOrderToPaid({ orderId })
 
-    revalidatePath(`/order/${orderId}`)
-
     return { success: true, message: "Order marked as paid" }
   } catch (error) {
     return { success: false, message: formatError(error) }
@@ -221,6 +229,10 @@ export async function deliverOrder(orderId: string) {
     })
 
     revalidatePath(`/order/${orderId}`)
+    // ✅ Invalidate the cache for `getMyOrders` after updating the deliverOrder
+    revalidateTag(`orders-${order.userId}`)
+    // ✅ Invalidate the cache for `getAllOrders` after updating the deliverOrder
+    revalidateTag("all-orders")
 
     return {
       success: true,
@@ -239,23 +251,45 @@ export async function getMyOrders({
   limit?: number
   page: number
 }) {
-  const session = await auth()
-  if (!session) throw new Error("User is not authorized")
+  try {
+    const session = await auth()
+    if (!session) throw new Error("User is not authorized")
 
-  const data = await prisma.order.findMany({
-    where: { userId: session?.user?.id },
-    orderBy: { createdAt: "desc" },
-    take: limit,
-    skip: (page - 1) * limit,
-  })
+    const cacheKey = `my-orders-${session.user.id}-${page}-${limit}`
 
-  const dataCount = await prisma.order.count({
-    where: { userId: session?.user?.id },
-  })
+    const cachedFn = unstable_cache(
+      async () => {
+        const [data, dataCount] = await prisma.$transaction([
+          prisma.order.findMany({
+            where: { userId: session.user.id },
+            orderBy: { createdAt: "desc" },
+            take: limit,
+            skip: (page - 1) * limit,
+          }),
+          prisma.order.count({
+            where: { userId: session.user.id },
+          }),
+        ])
 
-  return {
-    data,
-    totalPages: Math.ceil(dataCount / limit),
+        return {
+          data,
+          totalPages: Math.ceil(dataCount / limit),
+        }
+      },
+      [cacheKey],
+      {
+        tags: [`orders-${session.user.id}`],
+        revalidate: 60 * 30, // 30 minutes
+      },
+    )
+
+    return await cachedFn()
+  } catch (error) {
+    console.error("Failed to fetch orders:", error)
+    return {
+      data: [],
+      totalPages: 0,
+    }
   }
 }
 
@@ -340,23 +374,29 @@ export const getAllOrders = unstable_cache(
       include: { user: { select: { name: true } } },
     })
 
-    const dataCount = await prisma.order.count()
+    const dataCount = await prisma.order.count({ where: { ...queryFilter } })
 
     return {
       data,
       totalPages: Math.ceil(dataCount / limit),
     }
   },
-  ["all-orders"],
-  { revalidate: 60 * 60 },
+  ["all-orders"], // Dynamic cache key
+  { revalidate: 60 * 60, tags: ["all-orders"] }, // Cache for 1 hour
 )
 
 // Delete an order
 export async function deleteOrder(id: string): ActionReturn {
   try {
-    await prisma.order.delete({ where: { id } })
+    const selectedOrder = await getOrderById(id)
+    if (!selectedOrder) throw new Error("No order found to delete.")
 
-    revalidatePath("/admin/orders")
+    await prisma.order.delete({ where: { id: selectedOrder.id } })
+
+    // ✅ Invalidate the cache for `getMyOrders` after deleting a order
+    revalidateTag(`orders-${selectedOrder.userId}`)
+    // ✅ Invalidate the cache for `getAllOrders` after deleting a order
+    revalidateTag("all-orders")
 
     return {
       success: true,
