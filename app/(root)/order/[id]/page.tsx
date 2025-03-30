@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { notFound, redirect } from "next/navigation"
 
 import { auth } from "@/auth"
+import Stripe from "stripe"
 
 import type { ShippingAddress } from "@/types"
 
@@ -52,6 +53,21 @@ export default async function OrderDetailsPage({
     deliveredAt,
   } = order
 
+  let stripe_client_secret = null
+
+  // Check if is not paid and using stripe
+  if (order.paymentMethod === "Stripe" && !order.isPaid) {
+    // Init stripe instance
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+    // Create payment intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(Number(order.totalPrice) * 100),
+      currency: "USD",
+      metadata: { orderId: order.id },
+    })
+    stripe_client_secret = paymentIntent.client_secret
+  }
+
   return (
     <>
       <h1 className="py-4 text-2xl">Order {formatId(id)}</h1>
@@ -68,10 +84,7 @@ export default async function OrderDetailsPage({
 
           <PaymentMethodCard
             paymentMethod={paymentMethod}
-            status={{
-              isPaid,
-              paidAt,
-            }}
+            status={{ isPaid, paidAt }}
             editHref={null} // Explicitly hide edit
           />
 
@@ -86,8 +99,8 @@ export default async function OrderDetailsPage({
             totalPrice={totalPrice}
             isPaid={isPaid}
             paymentMethod={paymentMethod}
-            paypalClientId={process.env.PAYPAL_CLIENT_ID || "sb"}
             isAdmin={session?.user?.role === "admin" || false}
+            stripeClientSecret={stripe_client_secret}
             isDelivered={isDelivered}
           />
         </div>

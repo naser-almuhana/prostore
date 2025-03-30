@@ -25,6 +25,8 @@ import {
 
 // components/search/sort-select.tsx
 
+// components/search/sort-select.tsx
+
 interface SortSelectProps {
   currentSort: string
   searchParams: {

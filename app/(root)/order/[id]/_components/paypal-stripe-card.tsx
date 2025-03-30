@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card"
 
 import { MarkAsDeliveredButton } from "./mark-as-delivered-button"
 import { MarkAsPaidButton } from "./mark-as-paid-button"
+import { StripePayment } from "./stripe-payment"
 
 interface PaypalStripeCardProps {
   orderId: string
@@ -26,9 +27,9 @@ interface PaypalStripeCardProps {
   totalPrice: string
   isPaid: boolean
   paymentMethod: string
-  paypalClientId: string
   isAdmin: boolean
   isDelivered: boolean
+  stripeClientSecret: string | null
 }
 
 export function PaypalStripeCard({
@@ -39,9 +40,9 @@ export function PaypalStripeCard({
   totalPrice,
   isPaid,
   paymentMethod,
-  paypalClientId,
   isAdmin,
   isDelivered,
+  stripeClientSecret,
 }: PaypalStripeCardProps) {
   const PrintLoadingState = () => {
     const [{ isPending, isRejected }] = usePayPalScriptReducer()
@@ -97,7 +98,9 @@ export function PaypalStripeCard({
         {/* PayPal Payment */}
         {!isPaid && paymentMethod === "PayPal" && (
           <div>
-            <PayPalScriptProvider options={{ clientId: paypalClientId }}>
+            <PayPalScriptProvider
+              options={{ clientId: process.env.PAYPAL_CLIENT_ID || "sb" }}
+            >
               <PrintLoadingState />
               <PayPalButtons
                 createOrder={handleCreatePayPalOrder}
@@ -105,6 +108,15 @@ export function PaypalStripeCard({
               />
             </PayPalScriptProvider>
           </div>
+        )}
+
+        {/* Stripe Payment */}
+        {!isPaid && paymentMethod === "Stripe" && stripeClientSecret && (
+          <StripePayment
+            priceInCents={Number(totalPrice) * 100}
+            orderId={orderId}
+            clientSecret={stripeClientSecret}
+          />
         )}
 
         {/* Cash On Delivery */}
