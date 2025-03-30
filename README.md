@@ -2,6 +2,8 @@
 
 ProStore is a full-stack eCommerce website built with **Next.js 15**,**React 19**, **Prisma**, **TailwindCSS v4**, **Stripe**, **PayPal**, and more. It allows users to browse products, manage their carts, and complete purchases with various payment methods. The platform includes an admin dashboard for managing products, orders, and users.
 
+<img src="/public/images/screen.png" alt="Next.js Ecommerce" />
+
 ## 🌟 Live Demo
 
 - [Main Store](https://prostore-alpha-two.vercel.app/)
