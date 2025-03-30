@@ -109,6 +109,12 @@ Follow these steps to get the application up and running locally:
    Run Prisma migrations to set up the database schema:
 
    ```bash
+   npm run db:generate
+   ```
+
+   and then migrate
+
+   ```bash
    npx prisma migrate dev
    ```
 
@@ -195,3 +201,18 @@ Here’s a brief explanation of each environment variable in your `.env` file:
 ### Other Configuration
 
 - `NEXT_PUBLIC_TARGET_DATE`: A public-facing target date (likely for countdown timers or promotions).
+
+## License
+
+MIT License
+
+Copyright (c) [2025] [Naser Almuhana]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall
