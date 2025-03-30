@@ -129,3 +129,9 @@ export const PRICES = [
 export const RATINGS = [4, 3, 2, 1]
 
 export const SORT_ORDERS = ["newest", "lowest", "highest", "rating"]
+
+// resend
+export const SENDER_EMAIL = process.env.SENDER_EMAIL || "onboarding@resend.dev"
+
+export const TARGET_DATE =
+  process.env.NEXT_PUBLIC_TARGET_DATE || "2025-04-05T00:00:00"

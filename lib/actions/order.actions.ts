@@ -4,9 +4,15 @@ import { revalidatePath, revalidateTag, unstable_cache } from "next/cache"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
 
 import { auth } from "@/auth"
+import { sendPurchaseReceipt } from "@/email"
 import { Prisma } from "@prisma/client"
 
-import type { ActionReturn, PaymentResult, SalesDataType } from "@/types"
+import type {
+  ActionReturn,
+  PaymentResult,
+  SalesDataType,
+  ShippingAddress,
+} from "@/types"
 
 import { prisma } from "@/db/prisma"
 
@@ -192,13 +198,13 @@ export async function updateOrderToPaid({
 
   if (!updatedOrder) throw new Error("Order not found")
 
-  //   sendPurchaseReceipt({
-  //     order: {
-  //       ...updatedOrder,
-  //       shippingAddress: updatedOrder.shippingAddress as ShippingAddress,
-  //       paymentResult: updatedOrder.paymentResult as PaymentResult,
-  //     },
-  //   })
+  sendPurchaseReceipt({
+    order: {
+      ...updatedOrder,
+      shippingAddress: updatedOrder.shippingAddress as ShippingAddress,
+      paymentResult: updatedOrder.paymentResult as PaymentResult,
+    },
+  })
 }
 
 // Update Cash on Delivery order to paid
