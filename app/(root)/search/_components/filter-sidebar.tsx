@@ -18,7 +18,7 @@ export function FilterSidebar({
   getFilterUrl,
 }: FilterSidebarProps) {
   return (
-    <div className="py-4">
+    <div className="p-4">
       <FilterSection
         title="Categories"
         items={categories.map((c) => ({ name: c.category, value: c.category }))}
