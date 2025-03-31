@@ -23,9 +23,11 @@ export function FilterSection({
   getFilterUrl,
 }: FilterSectionProps) {
   return (
-    <Accordion type="single" collapsible>
+    <Accordion type="multiple" defaultValue={[paramKey]}>
       <AccordionItem value={paramKey}>
-        <AccordionTrigger className="cursor-pointer">{title}</AccordionTrigger>
+        <AccordionTrigger defaultValue={"open"} className="cursor-pointer">
+          {title}
+        </AccordionTrigger>
         <AccordionContent>
           <ul className="space-y-1">
             <li>
