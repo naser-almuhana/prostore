@@ -54,7 +54,7 @@ export async function ReviewList({
           <Card key={review.id}>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex flex-col gap-1">
                   <CardTitle>{review.title}</CardTitle>
                   <CardDescription>{review.description}</CardDescription>
                 </div>
