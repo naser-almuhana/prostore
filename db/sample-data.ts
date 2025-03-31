@@ -1,11 +1,12 @@
 const sampleData = {
   users: [
-    {
-      name: "John",
-      email: "admin@example.com",
-      password: "123456",
-      role: "admin",
-    },
+    // Add admin user here like this
+    // {
+    //   name: "",
+    //   email: "",
+    //   password: "",
+    //   role: "admin",
+    // },
     {
       name: "Jane",
       email: "user@example.com",
@@ -19,8 +20,8 @@ const sampleData = {
       category: "Men's Dress Shirts",
       description: "Classic Polo style with modern comfort",
       images: [
-        "/images/sample-products/p1-1.jpg",
-        "/images/sample-products/p1-2.jpg",
+        "https://utfs.io/f/y8H5xxEpLidgLIEhmyKjYr2TBlKW8NZHAQqV4Lk6vumpD1yE",
+        "https://utfs.io/f/y8H5xxEpLidg0yDVBJQSYXyoV2v5Bct1umr8eAjJs30nKgZN",
       ],
       price: 59.99,
       brand: "Polo",
@@ -35,7 +36,9 @@ const sampleData = {
       slug: "brooks-brothers-long-sleeved-shirt",
       category: "Men's Dress Shirts",
       description: "Timeless style and premium comfort",
-      images: ["/images/sample-products/p2-1.jpg"],
+      images: [
+        "https://utfs.io/f/y8H5xxEpLidg6yO63vfL2UEsBaAhg9vwMCVrH0dScb1XQGx5",
+      ],
       price: 85.9,
       brand: "Brooks Brothers",
       rating: 4.2,
@@ -49,7 +52,9 @@ const sampleData = {
       slug: "tommy-hilfiger-classic-fit-dress-shirt",
       category: "Men's Dress Shirts",
       description: "A perfect blend of sophistication and comfort",
-      images: ["/images/sample-products/p3-1.jpg"],
+      images: [
+        "https://utfs.io/f/y8H5xxEpLidgitf276s81EXxSp7VCvfDLubrsjRWic5GaIMB",
+      ],
       price: 99.95,
       brand: "Tommy Hilfiger",
       rating: 4.9,
@@ -63,7 +68,9 @@ const sampleData = {
       slug: "calvin-klein-slim-fit-stretch-shirt",
       category: "Men's Dress Shirts",
       description: "Streamlined design with flexible stretch fabric",
-      images: ["/images/sample-products/p4-1.jpg"],
+      images: [
+        "https://utfs.io/f/y8H5xxEpLidgql3oURit7hbnuamkwUcj1ZWRHdvDFGOo8XgQ",
+      ],
       price: 39.95,
       brand: "Calvin Klein",
       rating: 3.6,
@@ -77,7 +84,9 @@ const sampleData = {
       slug: "polo-ralph-lauren-oxford-shirt",
       category: "Men's Dress Shirts",
       description: "Iconic Polo design with refined oxford fabric",
-      images: ["/images/sample-products/p5-1.jpg"],
+      images: [
+        "https://utfs.io/f/y8H5xxEpLidgql3oURit7hbnuamkwUcj1ZWRHdvDFGOo8XgQ",
+      ],
       price: 79.99,
       brand: "Polo",
       rating: 4.7,
@@ -91,7 +100,9 @@ const sampleData = {
       slug: "polo-classic-pink-hoodie",
       category: "Men's Sweatshirts",
       description: "Soft, stylish, and perfect for laid-back days",
-      images: ["/images/sample-products/p6-1.jpg"],
+      images: [
+        "https://utfs.io/f/y8H5xxEpLidgql3oURit7hbnuamkwUcj1ZWRHdvDFGOo8XgQ",
+      ],
       price: 99.99,
       brand: "Polo",
       rating: 4.6,
