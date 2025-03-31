@@ -9,12 +9,8 @@ export const GITHUB_REPO_URL =
   process.env.GITHUB_REPO_URL || "https://github.com/naseralmuhana/prostore"
 
 // auth
-// export const signInDefaultValues = {
-//   email: "user@example.com",
-//   password: "123456",
-// }
 export const signInDefaultValues = {
-  email: "admin@example.com",
+  email: "user@example.com",
   password: "123456",
 }
 
