@@ -6,7 +6,7 @@ export const SERVER_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000"
 
 export const GITHUB_REPO_URL =
-  process.env.GITHUB_REPO_URL || "https://github.com/naseralmuhana/prostore"
+  process.env.GITHUB_REPO_URL || "https://github.com/naser-almuhana/prostore"
 
 // auth
 export const signInDefaultValues = {
